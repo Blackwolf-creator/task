@@ -195,3 +195,8 @@ Env vars needed: `DATABASE_URL`, `AUTH_COOKIE_SECRET` (long random string),
 evaluator to be able to use the switcher at all). Run `pnpm db:migrate`
 against the target database before first boot, then `pnpm db:seed` once for
 demo data.
+
+
+## Live Demo
+
+https://task-chi-bay.vercel.app/
