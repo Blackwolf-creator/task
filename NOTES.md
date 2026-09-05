@@ -120,9 +120,6 @@ as if the row had never been attempted.
   `/reel|p|tv/<id>`; YouTube `watch?v=`, `/shorts/`, `youtu.be/`) rather
   than just checking the hostname, per "has to look like a real post URL."
   It'll reject profile/home URLs on all three platforms.
-- **`campaigns.listActive`** (creator browse) is `protectedProcedure`
-  rather than creator-only — an admin can look, only creators can submit.
-  Didn't see a reason to lock browsing to one role.
 - Money is integer cents everywhere, including in the admin campaign form
   (labelled explicitly, e.g. "Payout per 1,000 views (cents)") — no
   dollar-to-cents conversion layer, to avoid introducing a float step.
@@ -138,20 +135,16 @@ as if the row had never been attempted.
   tooling below).
 - Rate limiting, audit log, email notifications, campaign soft-delete.
 
-## First thing I'd fix given another day
+## First thing I'd improve given another day
 
-Two things, in order:
+1. **Multi-tenant campaign ownership.**
+   The current take-home has a single admin scope, so admin-only campaign reads
+   are protected by role rather than organization ownership. If this evolved
+   into a multi-tenant product, I would add an organization/account boundary
+   to campaigns and enforce that ownership alongside the existing role checks.
 
-1. **Ownership on the campaign-detail route.** Every procedure enforces
-   role, but a couple of admin-only reads (`campaigns.getById`,
-   `campaigns.dailyViews`, `submissions.pendingForCampaign`) don't currently
-   distinguish "campaign doesn't exist" from anything else — fine for a
-   single-admin-org take-home, but if this became multi-tenant (agencies
-   each owning their own campaigns) that's the seam where a real ownership
-   check would need to land next to the existing role check.
-2. Replace the client-side `for (submission of approvedSubmissions)`
-   sequential loop in `runMetricsIngest` with a bounded-concurrency batch —
-   fine for a take-home's worth of rows, not for real volume.
+2. Replace the sequential per-submission loop in `runMetricsIngest` with a
+   bounded-concurrency batch for production-scale ingestion.
 
 ## AI tooling
 
