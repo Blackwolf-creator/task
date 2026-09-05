@@ -140,6 +140,8 @@ async function main() {
       postUrl: "https://www.youtube.com/shorts/example123",
       platform: "youtube",
       status: "approved",
+      // 8,500 views locked in at approval * 500 cents/1k = 4,000 cents.
+      payoutCents: 4_000,
     },
     {
       id: ids.submissionRejected,

@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   check,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -44,6 +45,8 @@ export const submissions = pgTable(
 
     rejectionReason: text("rejection_reason"),
 
+    payoutCents: integer("payout_cents"),
+
     createdAt: timestamp("created_at", {
       withTimezone: true,
     })
@@ -74,6 +77,22 @@ export const submissions = pgTable(
         (
           ${table.status} <> 'rejected'
           AND ${table.rejectionReason} IS NULL
+        )
+      `,
+    ),
+
+    check(
+      "submissions_payout_cents_check",
+      sql`
+        (
+          ${table.status} IN ('approved', 'paid')
+          AND ${table.payoutCents} IS NOT NULL
+          AND ${table.payoutCents} >= 0
+        )
+        OR
+        (
+          ${table.status} NOT IN ('approved', 'paid')
+          AND ${table.payoutCents} IS NULL
         )
       `,
     ),

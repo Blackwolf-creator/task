@@ -24,3 +24,8 @@ export const submissionStatusEnum = pgEnum("submission_status", [
   "rejected",
   "paid",
 ]);
+
+export type UserRole = (typeof userRoleEnum.enumValues)[number];
+export type CampaignStatus = (typeof campaignStatusEnum.enumValues)[number];
+export type SubmissionStatus =
+  (typeof submissionStatusEnum.enumValues)[number];
